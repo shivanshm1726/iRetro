@@ -1,10 +1,14 @@
 // Supabase Configuration
-// Get your credentials from: https://supabase.com/dashboard/project/YOUR_PROJECT/settings/api
+// For local development, set these values directly
+// For production, these should be injected by your build/deploy process
 
-const SUPABASE_URL = 'https://xvrydgxnoskcferbbhze.supabase.co';
-// ⚠️ IMPORTANT: Get the correct anon key from Supabase Dashboard → Settings → API → Project API keys → anon public
-// It should start with "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." and be ~180 characters long
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2cnlkZ3hub3NrY2ZlcmJiaHplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODUzNTYsImV4cCI6MjA4NTk2MTM1Nn0.pCBmET1SVvqfKi6ipmC2KPqzAIEv4p5msCKGveN_o54';
+// Check if running locally or in production
+const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// For security, use environment variables in production
+// For local dev, you can set these directly (they won't be committed if you use .env)
+const SUPABASE_URL = window.SUPABASE_URL || 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
 // Initialize Supabase client
 let supabaseClient = null;

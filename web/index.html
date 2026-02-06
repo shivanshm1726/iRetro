@@ -220,6 +220,8 @@
 
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Load local config if exists (gitignored) -->
+    <script src="config.local.js" onerror="console.log('No local config, using defaults')"></script>
     <script src="supabase.js"></script>
     <script src="app.js"></script>
     <script>

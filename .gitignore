@@ -31,6 +31,7 @@ Thumbs.db
 # Environment
 .env
 .env.local
+web/config.local.js
 
 # Node (old)
 node_modules/
