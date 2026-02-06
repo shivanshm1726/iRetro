@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>iRetro - iPod Music Player</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <div class="ipod-device theme-silver">
+            <!-- Screen Area -->
+            <div class="ipod-device__screen-area">
+                <div class="ipod-screen">
+                    <div class="ipod-screen__content">
+                        <!-- Status Bar -->
+                        <div class="ipod-status-bar">
+                            <div class="ipod-status-bar__left"></div>
+                            <div class="ipod-status-bar__title" id="statusTitle">iRetro</div>
+                            <div class="ipod-status-bar__right">
+                                <div class="ipod-status-bar__playing" id="playingIndicator" style="display: none;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                                <div class="ipod-status-bar__battery">
+                                    <div class="ipod-status-bar__battery-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Screen Content -->
+                        <div class="ipod-screen__view">
+                            <!-- Menu View -->
+                            <div id="menuView" class="view">
+                                <div class="ipod-list">
+                                    <div class="ipod-list__item ipod-list__item--selected" data-view="nowPlaying">
+                                        <span>Now Playing</span>
+                                        <span class="ipod-list__arrow">›</span>
+                                    </div>
+                                    <div class="ipod-list__item" data-view="search">
+                                        <span>Search</span>
+                                        <span class="ipod-list__arrow">›</span>
+                                    </div>
+                                    <div class="ipod-list__item" data-view="likedSongs">
+                                        <span>Liked Songs</span>
+                                        <span class="ipod-list__arrow">›</span>
+                                    </div>
+                                    <div class="ipod-list__item" id="menuAccountItem">
+                                        <span id="menuAccountText">Account</span>
+                                        <span class="ipod-list__arrow">›</span>
+                                    </div>
+                                    <div class="ipod-list__item" data-view="settings">
+                                        <span>Settings</span>
+                                        <span class="ipod-list__arrow">›</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Now Playing View -->
+                            <div id="nowPlayingView" class="view" style="display: none;">
+                                <div class="ipod-now-playing">
+                                    <div class="ipod-now-playing__artwork">
+                                        <div class="ipod-now-playing__artwork-placeholder" id="artworkPlaceholder">
+                                            <svg width="64" height="64" viewBox="0 0 24 24" fill="#666">
+                                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                            </svg>
+                                        </div>
+                                        <img id="artwork" src="" alt="" style="display: none;">
+                                    </div>
+                                    <div class="ipod-now-playing__info">
+                                        <div class="ipod-now-playing__title-row">
+                                            <div class="ipod-now-playing__title" id="trackTitle">No Track Selected</div>
+                                            <button class="ipod-now-playing__like-btn" id="likeBtn" title="Like this song">
+                                                <span class="like-icon">♡</span>
+                                            </button>
+                                        </div>
+                                        <div class="ipod-now-playing__artist" id="trackArtist">Search for music</div>
+                                        <div class="ipod-now-playing__progress">
+                                            <span class="ipod-now-playing__time" id="currentTime">0:00</span>
+                                            <div class="ipod-now-playing__progress-bar">
+                                                <div class="ipod-now-playing__progress-fill" id="progressFill" style="width: 0%"></div>
+                                            </div>
+                                            <span class="ipod-now-playing__time" id="totalTime">0:00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Liked Songs View -->
+                            <!-- Liked Songs View - Spotify Style -->
+                            <div id="likedSongsView" class="view" style="display: none;">
+                                <div class="ipod-liked-songs">
+                                    <div class="ipod-liked-songs__header">
+                                        <div class="ipod-liked-songs__header-icon">💜</div>
+                                        <div class="ipod-liked-songs__header-info">
+                                            <div class="ipod-liked-songs__header-title">Liked Songs</div>
+                                            <div class="ipod-liked-songs__header-count" id="likedSongsCount">0 songs</div>
+                                        </div>
+                                    </div>
+                                    <div class="ipod-liked-songs__list" id="likedSongsList">
+                                        <div class="ipod-liked-songs__empty">
+                                            <div class="ipod-liked-songs__empty-icon">💜</div>
+                                            <div>Songs you like will appear here</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search View -->
+                            <div id="searchView" class="view" style="display: none;">
+                                <div class="ipod-search">
+                                    <div class="ipod-search__input-wrapper">
+                                        <input type="text" id="searchInput" class="ipod-search__input" placeholder="Search music...">
+                                    </div>
+                                    <div class="ipod-search__results" id="searchResults">
+                                        <div class="ipod-search__empty">Type to search</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Settings View -->
+                            <div id="settingsView" class="view" style="display: none;">
+                                <div class="ipod-list">
+                                    <div class="ipod-list__header">Theme</div>
+                                    <div class="ipod-list__item" data-theme="silver">
+                                        <span>Silver</span>
+                                        <span class="ipod-list__check" id="checkSilver">✓</span>
+                                    </div>
+                                    <div class="ipod-list__item" data-theme="blue">
+                                        <span>Blue</span>
+                                        <span class="ipod-list__check" id="checkBlue"></span>
+                                    </div>
+                                    <div class="ipod-list__item" data-theme="pink">
+                                        <span>Pink</span>
+                                        <span class="ipod-list__check" id="checkPink"></span>
+                                    </div>
+                                    <div class="ipod-list__item" data-theme="yellow">
+                                        <span>Yellow</span>
+                                        <span class="ipod-list__check" id="checkYellow"></span>
+                                    </div>
+                                    <div class="ipod-list__item" data-theme="red">
+                                        <span>Red</span>
+                                        <span class="ipod-list__check" id="checkRed"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ipod-screen__glass"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wheel Area -->
+            <div class="ipod-device__wheel-area">
+                <div class="ipod-wheel">
+                    <div class="ipod-wheel__ring">
+                        <button class="ipod-wheel__button ipod-wheel__button--menu" id="btnMenu">MENU</button>
+                        <button class="ipod-wheel__button ipod-wheel__button--prev" id="btnPrev">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
+                        <button class="ipod-wheel__button ipod-wheel__button--next" id="btnNext">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </button>
+                        <button class="ipod-wheel__button ipod-wheel__button--playpause" id="btnPlayPause">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="ipod-wheel__center" id="btnSelect"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Element -->
+    <audio id="audioPlayer" preload="auto"></audio>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal" style="display: none;">
+        <div class="auth-modal__backdrop"></div>
+        <div class="auth-modal__content">
+            <button class="auth-modal__close" id="authModalClose">×</button>
+            <div class="auth-modal__header">
+                <div class="auth-modal__logo">💜</div>
+                <h2 class="auth-modal__title" id="authModalTitle">Sign In</h2>
+                <p class="auth-modal__subtitle">Sync your liked songs across devices</p>
+            </div>
+            <form id="authForm" class="auth-modal__form">
+                <div class="auth-modal__field">
+                    <input type="email" id="authEmail" placeholder="Email" required>
+                </div>
+                <div class="auth-modal__field">
+                    <input type="password" id="authPassword" placeholder="Password" required minlength="6">
+                </div>
+                <div class="auth-modal__error" id="authError" style="display: none;"></div>
+                <button type="submit" class="auth-modal__submit" id="authSubmit">Sign In</button>
+            </form>
+            <div class="auth-modal__switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <button type="button" id="authSwitchBtn">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>
