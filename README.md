@@ -19,22 +19,34 @@ Stream music with a clean retro interface inspired by the iPod Classic.
 
 ## 🚀 Run Locally
 
-### 1. Clone the repository
+### 1️⃣ Clone the repository
 
+```bash
 git clone https://github.com/shivanshm1726/iretro.git
 cd iretro
-2. Start the backend server
+```
+
+### 2️⃣ Start the backend server
+
+```bash
 cd backend
 go run main.go
-3. Open in your browser
+```
+
+### 3️⃣ Open in your browser
+
+```
 http://localhost:8080
-🖥 Platform Support
-🌐 Web Browser
-
-📱 iOS (Safari / PWA)
-
-🤖 Android (Chrome / PWA)
-
-Made with 💜 by Shivansh
+```
 
 ---
+
+## 🖥 Platform Support
+
+- 🌐 Web Browser  
+- 📱 iOS (Safari / PWA)  
+- 🤖 Android (Chrome / PWA)
+
+---
+
+Made with 💜 by Shivansh
