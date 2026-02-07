@@ -3,7 +3,10 @@ services:
     name: iretro-server
     runtime: docker
     dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: oregon
+    plan: free
     envVars:
       - key: PORT
         value: 8080
-    healthCheckPath: /api/health
+    healthCheckPath: /health
