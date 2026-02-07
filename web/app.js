@@ -11,7 +11,7 @@
 // Backend API URL - use same origin in production, localhost for development
 const API_BASE = window.location.hostname === 'localhost' 
     ? 'http://localhost:8080' 
-    : window.location.origin;
+    : 'https://iretro-zvex.onrender.com';
 
 console.log('[iRetro v2.0.0] API_BASE:', API_BASE);
 
