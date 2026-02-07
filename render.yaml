@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: monad-server
+    name: iretro-server
     runtime: docker
     dockerfilePath: ./Dockerfile
     envVars:
