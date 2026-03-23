@@ -1,8 +1,10 @@
-const CACHE_NAME = 'monad-v1';
+const CACHE_NAME = 'monad-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/player.html',
   '/styles.css',
+  '/landing.css',
   '/app.js',
   '/manifest.json'
 ];

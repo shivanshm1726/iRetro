@@ -95,9 +95,13 @@ const elements = {
     authError: $('authError'),
     authSubmit: $('authSubmit'),
     authModalTitle: $('authModalTitle'),
+    authModalSubtitle: $('authModalSubtitle'),
     authSwitchText: $('authSwitchText'),
     authSwitchBtn: $('authSwitchBtn'),
+    authSwitchContainer: $('authSwitchContainer'),
     authModalClose: $('authModalClose'),
+    authEmailField: $('authEmailField'),
+    authPasswordField: $('authPasswordField'),
     menuAccountItem: $('menuAccountItem'),
     menuAccountText: $('menuAccountText'),
 };
@@ -781,7 +785,11 @@ let authMode = 'signin'; // 'signin' or 'signup'
 function showAuthModal() {
     if (elements.authModal) {
         elements.authModal.style.display = 'flex';
-        elements.authEmail.focus();
+        try {
+            if (authMode !== 'signout' && elements.authEmail) {
+                elements.authEmail.focus();
+            }
+        } catch(e) {}
     }
 }
 
@@ -794,19 +802,48 @@ function hideAuthModal() {
 }
 
 function setAuthMode(mode) {
-    authMode = mode;
-    if (mode === 'signup') {
-        elements.authModalTitle.textContent = 'Create Account';
-        elements.authSubmit.textContent = 'Sign Up';
-        elements.authSwitchText.textContent = 'Already have an account?';
-        elements.authSwitchBtn.textContent = 'Sign In';
-    } else {
-        elements.authModalTitle.textContent = 'Sign In';
-        elements.authSubmit.textContent = 'Sign In';
-        elements.authSwitchText.textContent = "Don't have an account?";
-        elements.authSwitchBtn.textContent = 'Sign Up';
+    try {
+        authMode = mode;
+        if (elements.authModalSubtitle) {
+            elements.authModalSubtitle.style.display = 'block';
+        }
+        
+        if (mode === 'signup') {
+            if (elements.authModalTitle) elements.authModalTitle.textContent = 'Create Account';
+            if (elements.authModalSubtitle) elements.authModalSubtitle.textContent = 'Sync your liked songs across devices';
+            if (elements.authSubmit) elements.authSubmit.textContent = 'Sign Up';
+            if (elements.authSwitchText) elements.authSwitchText.textContent = 'Already have an account?';
+            if (elements.authSwitchBtn) elements.authSwitchBtn.textContent = 'Sign In';
+            if (elements.authEmailField) elements.authEmailField.style.display = 'block';
+            if (elements.authPasswordField) elements.authPasswordField.style.display = 'block';
+            if (elements.authSwitchContainer) elements.authSwitchContainer.style.display = 'block';
+            if (elements.authEmail) elements.authEmail.required = true;
+            if (elements.authPassword) elements.authPassword.required = true;
+        } else if (mode === 'signin') {
+            if (elements.authModalTitle) elements.authModalTitle.textContent = 'Sign In';
+            if (elements.authModalSubtitle) elements.authModalSubtitle.textContent = 'Sync your liked songs across devices';
+            if (elements.authSubmit) elements.authSubmit.textContent = 'Sign In';
+            if (elements.authSwitchText) elements.authSwitchText.textContent = "Don't have an account?";
+            if (elements.authSwitchBtn) elements.authSwitchBtn.textContent = 'Sign Up';
+            if (elements.authEmailField) elements.authEmailField.style.display = 'block';
+            if (elements.authPasswordField) elements.authPasswordField.style.display = 'block';
+            if (elements.authSwitchContainer) elements.authSwitchContainer.style.display = 'block';
+            if (elements.authEmail) elements.authEmail.required = true;
+            if (elements.authPassword) elements.authPassword.required = true;
+        } else if (mode === 'signout') {
+            if (elements.authModalTitle) elements.authModalTitle.textContent = 'Account';
+            if (elements.authModalSubtitle) elements.authModalSubtitle.textContent = 'Signed in as ' + (state.user ? state.user.email : 'Unknown');
+            if (elements.authSubmit) elements.authSubmit.textContent = 'Sign Out';
+            if (elements.authEmailField) elements.authEmailField.style.display = 'none';
+            if (elements.authPasswordField) elements.authPasswordField.style.display = 'none';
+            if (elements.authSwitchContainer) elements.authSwitchContainer.style.display = 'none';
+            if (elements.authEmail) elements.authEmail.required = false;
+            if (elements.authPassword) elements.authPassword.required = false;
+        }
+        if (elements.authError) elements.authError.style.display = 'none';
+    } catch (err) {
+        console.error('[iRetro] setAuthMode error:', err);
     }
-    elements.authError.style.display = 'none';
 }
 
 function showAuthError(message) {
@@ -816,6 +853,22 @@ function showAuthError(message) {
 
 async function handleAuthSubmit(e) {
     e.preventDefault();
+    
+    if (authMode === 'signout') {
+        elements.authSubmit.disabled = true;
+        elements.authSubmit.textContent = 'Signing out...';
+        try {
+            await SupabaseAuth.signOut();
+            await handleUserLoggedOut();
+            hideAuthModal();
+        } catch (err) {
+            console.error('[iRetro] Sign out error:', err);
+            showAuthError(err.message || 'Sign out failed');
+        } finally {
+            elements.authSubmit.disabled = false;
+        }
+        return;
+    }
     
     if (!state.isSupabaseConfigured) {
         showAuthError('Supabase not configured. Please add your credentials.');
@@ -890,21 +943,16 @@ function updateAccountUI() {
 
 async function handleAccountClick() {
     if (state.user) {
-        // User is logged in, ask to sign out
-        if (confirm('Sign out of ' + state.user.email + '?')) {
-            try {
-                await SupabaseAuth.signOut();
-                await handleUserLoggedOut();
-            } catch (err) {
-                console.error('[iRetro] Sign out error:', err);
-            }
-        }
+        // User is logged in, show auth modal in signout mode
+        setAuthMode('signout');
+        showAuthModal();
     } else {
         // User is logged out, show auth modal
         if (!state.isSupabaseConfigured) {
             alert('Supabase not configured. Edit web/supabase.js to add your credentials.');
             return;
         }
+        setAuthMode('signin');
         showAuthModal();
     }
 }
